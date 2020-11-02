@@ -1,4 +1,4 @@
-package com.postnl.model.request;
+package com.postnl.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.AllArgsConstructor;

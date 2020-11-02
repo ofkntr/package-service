@@ -24,7 +24,7 @@ import com.postnl.exception.UnableToDeleteException;
 import com.postnl.exception.UnableToUpdateException;
 import com.postnl.model.Order;
 import com.postnl.model.OrderPage;
-import com.postnl.model.request.CreateProductRequest;
+import com.postnl.dto.request.CreateProductRequest;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;

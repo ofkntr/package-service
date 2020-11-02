@@ -1,4 +1,4 @@
-package com.postnl.model.response;
+package com.postnl.dto.response;
 
 import com.postnl.model.Order;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;

@@ -15,8 +15,8 @@
 
 package com.postnl.handler;
 
-import com.postnl.model.response.ErrorMessage;
-import com.postnl.model.response.GatewayResponse;
+import com.postnl.dto.response.ErrorMessage;
+import com.postnl.dto.response.GatewayResponse;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

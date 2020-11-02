@@ -22,9 +22,9 @@ import com.postnl.config.OrderComponent;
 import com.postnl.dao.OrderDao;
 import com.postnl.exception.CouldNotCreateOrderException;
 import com.postnl.model.Order;
-import com.postnl.model.request.CreateProductRequest;
-import com.postnl.model.response.ErrorMessage;
-import com.postnl.model.response.GatewayResponse;
+import com.postnl.dto.request.CreateProductRequest;
+import com.postnl.dto.response.ErrorMessage;
+import com.postnl.dto.response.GatewayResponse;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -36,12 +36,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class CreateOrderHandler implements OrderRequestStreamHandler {
 
-    static final Logger logger = LogManager.getLogger(CreateOrderHandler.class);
+    //static final Logger logger = LogManager.getLogger(CreateOrderHandler.class);
 
     private static final ErrorMessage REQUIRE_CUSTOMER_ID_ERROR
             = new ErrorMessage("Require customerId to create an order", SC_BAD_REQUEST);
@@ -136,7 +133,7 @@ public class CreateOrderHandler implements OrderRequestStreamHandler {
         }
         try {
             final Order order = orderDao.createOrder(request);
-            logger.info("Order is  created {}", order);
+            //logger.info("Order is  created {}", order);
             objectMapper.writeValue(output,
                     new GatewayResponse<>(objectMapper.writeValueAsString(order),
                             APPLICATION_JSON, SC_CREATED));
