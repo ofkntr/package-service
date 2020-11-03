@@ -1,11 +1,11 @@
 package com.postnl.handler;
 
-import com.postnl.config.DaggerOrderComponent;
-import com.postnl.config.OrderComponent;
-import com.postnl.dao.OrderDao;
-import com.postnl.model.OrderPage;
+import com.postnl.config.DaggerProductComponent;
+import com.postnl.config.ProductComponent;
+import com.postnl.dao.ProductDao;
+import com.postnl.model.ProductPage;
 import com.postnl.dto.response.GatewayResponse;
-import com.postnl.dto.response.GetOrdersResponse;
+import com.postnl.dto.response.GetProductsResponse;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -17,25 +17,26 @@ import java.io.OutputStream;
 import java.util.Optional;
 import javax.inject.Inject;
 
-/**
- *
- */
-public class GetOrdersHandler implements OrderRequestStreamHandler {
+public class GetProductsHandler implements DefaultRequestStreamHandler {
+
     @Inject
     ObjectMapper objectMapper;
-    @Inject
-    OrderDao orderDao;
-    private final OrderComponent orderComponent;
 
-    public GetOrdersHandler() {
-        orderComponent = DaggerOrderComponent.builder().build();
-        orderComponent.inject(this);
+    @Inject
+    ProductDao productDao;
+
+    private final ProductComponent productComponent;
+
+    public GetProductsHandler() {
+        productComponent = DaggerProductComponent.builder().build();
+        productComponent.inject(this);
     }
 
     @Override
     public void handleRequest(InputStream input, OutputStream output,
                               Context context) throws IOException {
         final JsonNode event;
+
         try {
             event = objectMapper.readTree(input);
         } catch (JsonMappingException e) {
@@ -43,15 +44,16 @@ public class GetOrdersHandler implements OrderRequestStreamHandler {
             return;
         }
         final JsonNode queryParameterMap = event.findValue("queryParameters");
-        final String exclusiveStartKeyQueryParameter = Optional.ofNullable(queryParameterMap)
+        final String offset = Optional.ofNullable(queryParameterMap)
                 .map(mapNode -> mapNode.get("exclusive_start_key").asText())
                 .orElse(null);
 
-        OrderPage page = orderDao.getOrders(exclusiveStartKeyQueryParameter);
-        //TODO handle exceptions
+        ProductPage page = productDao.getProducts(offset);
+
         objectMapper.writeValue(output, new GatewayResponse<>(
                 objectMapper.writeValueAsString(
-                        new GetOrdersResponse(page.getLastEvaluatedKey(), page.getOrders())),
+                        new GetProductsResponse(page.getProducts().size(), page.getProducts())),
                 APPLICATION_JSON, SC_OK));
     }
+
 }

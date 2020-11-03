@@ -1,22 +1,14 @@
 {
-    "GetOrderFunction": {
-        "ENDPOINT_OVERRIDE": "http://docker.for.windows.localhost:8000",
-        "TABLE_NAME": "orders_table"
+    "GetProductFunction": {
+        "ENDPOINT_OVERRIDE": "http://dynamodb:8000",
+        "TABLE_NAME": "products_table"
     },
-    "GetOrdersFunction": {
-        "ENDPOINT_OVERRIDE": "http://docker.for.windows.localhost:8000",
-        "TABLE_NAME": "orders_table"
+    "GetProductsFunction": {
+        "ENDPOINT_OVERRIDE": "http://dynamodb:8000",
+        "TABLE_NAME": "products_table"
     },
-    "UpdateOrderFunction": {
-        "ENDPOINT_OVERRIDE": "http://docker.for.windows.localhost:8000",
-        "TABLE_NAME": "orders_table"
-    },
-    "DeleteOrderFunction": {
-        "ENDPOINT_OVERRIDE": "http://docker.for.windows.localhost:8000",
-        "TABLE_NAME": "orders_table"
-    },
-    "CreateOrderFunction": {
-        "ENDPOINT_OVERRIDE": "http://docker.for.windows.localhost:8000",
-        "TABLE_NAME": "orders_table"
+    "CreateProductFunction": {
+        "ENDPOINT_OVERRIDE": "http://dynamodb:8000",
+        "TABLE_NAME": "products_table"
     }
 }

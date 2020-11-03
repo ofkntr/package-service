@@ -1,18 +1,3 @@
-/*
- * Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License").
- * You may not use this file except in compliance with the License.
- * A copy of the License is located at
- *
- *  http://aws.amazon.com/apache2.0
- *
- * or in the "license" file accompanying this file. This file is distributed
- * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
- */
-
 package com.postnl.handler;
 
 import com.postnl.dto.response.ErrorMessage;
@@ -26,23 +11,26 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Map;
 
-public interface OrderRequestStreamHandler extends RequestStreamHandler {
+public interface DefaultRequestStreamHandler extends RequestStreamHandler {
 
     int SC_OK = 200;
     int SC_CREATED = 201;
     int SC_BAD_REQUEST = 400;
     int SC_NOT_FOUND = 404;
-    int SC_CONFLICT = 409;
     int SC_INTERNAL_SERVER_ERROR = 500;
+
     Map<String, String> APPLICATION_JSON = Collections.singletonMap("Content-Type",
             "application/json");
+
     ErrorMessage REQUEST_WAS_NULL_ERROR
             = new ErrorMessage("Request was null", SC_BAD_REQUEST);
-    ErrorMessage ORDER_ID_WAS_NOT_SET
-            = new ErrorMessage("order_id was not set", SC_NOT_FOUND);
+
+    ErrorMessage PRODUCT_ID_WAS_NOT_SET
+            = new ErrorMessage("product_id was not set", SC_NOT_FOUND);
 
     /**
      * This method writes a body has invalid JSON response.
+     *
      * @param objectMapper the mappeter to use for converting the error response to JSON.
      * @param output the output stream to write with the mapper.
      * @param details a detailed message describing why the JSON was invalid.

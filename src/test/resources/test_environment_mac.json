@@ -1,22 +1,14 @@
 {
-    "GetOrderFunction": {
+    "GetProductFunction": {
         "ENDPOINT_OVERRIDE": "http://dynamodb:8000",
-        "TABLE_NAME": "orders_table"
+        "TABLE_NAME": "products_table"
     },
-    "GetOrdersFunction": {
+    "GetProductsFunction": {
         "ENDPOINT_OVERRIDE": "http://dynamodb:8000",
-        "TABLE_NAME": "orders_table"
+        "TABLE_NAME": "products_table"
     },
-    "UpdateOrderFunction": {
+    "CreateProductFunction": {
         "ENDPOINT_OVERRIDE": "http://dynamodb:8000",
-        "TABLE_NAME": "orders_table"
-    },
-    "DeleteOrderFunction": {
-        "ENDPOINT_OVERRIDE": "http://dynamodb:8000",
-        "TABLE_NAME": "orders_table"
-    },
-    "CreateOrderFunction": {
-        "ENDPOINT_OVERRIDE": "http://dynamodb:8000",
-        "TABLE_NAME": "orders_table"
+        "TABLE_NAME": "products_table"
     }
 }

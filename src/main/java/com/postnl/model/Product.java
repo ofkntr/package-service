@@ -1,21 +1,23 @@
-package com.postnl.dto.request;
+package com.postnl.model;
 
-import java.time.ZonedDateTime;
-
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
+/**
+ * Data class for (Base) products .
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonAutoDetect
-public class CreateProductRequest {
+@ToString
+public class Product {
+    private String productId;
     private String productType;
     private String deliveryDate;
 }

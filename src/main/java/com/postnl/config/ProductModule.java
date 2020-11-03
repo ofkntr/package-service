@@ -1,8 +1,8 @@
 package com.postnl.config;
 
-import com.postnl.dao.OrderDao;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.postnl.dao.ProductDao;
+
 import dagger.Module;
 import dagger.Provides;
 import software.amazon.awssdk.http.apache.ApacheHttpClient;
@@ -15,26 +15,28 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 
+/**
+ * Singleton scope bean configurations
+ */
 @Module
-public class OrderModule {
+public class ProductModule {
+
     @Singleton
     @Provides
     @Named("tableName")
     String tableName() {
-        return Optional.ofNullable(System.getenv("TABLE_NAME")).orElse("orders_table");
+        return Optional.ofNullable(System.getenv("TABLE_NAME")).orElse("products_table");
     }
 
     @Singleton
     @Provides
     DynamoDbClient dynamoDb() {
         final String endpoint = System.getenv("ENDPOINT_OVERRIDE");
-
         DynamoDbClientBuilder builder = DynamoDbClient.builder();
         builder.httpClient(ApacheHttpClient.builder().build());
         if (endpoint != null && !endpoint.isEmpty()) {
             builder.endpointOverride(URI.create(endpoint));
         }
-
         return builder.build();
     }
 
@@ -46,7 +48,8 @@ public class OrderModule {
 
     @Singleton
     @Provides
-    public OrderDao orderDao(DynamoDbClient dynamoDb, @Named("tableName") String tableName) {
-        return new OrderDao(dynamoDb, tableName,10);
+    public ProductDao productDao(DynamoDbClient dynamoDb, @Named("tableName") String tableName) {
+        return new ProductDao(dynamoDb, tableName,10);
     }
+
 }

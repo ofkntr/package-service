@@ -11,95 +11,65 @@ Globals:
         MemorySize: 512
         Environment:
           Variables:
-            TABLE_NAME: !Ref OrdersTable
+            TABLE_NAME: !Ref ProductsTable
             ENDPOINT_OVERRIDE: ""
 
 Resources:
-  GetOrderFunction:
+  GetProductFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: target/package-service-1.0.0.jar
-      Handler: com.postnl.handler.GetOrderHandler::handleRequest
+      Handler: com.postnl.handler.GetProductHandler::handleRequest
       Runtime: java8
       Policies:
         - DynamoDBReadPolicy:
-            TableName: !Ref OrdersTable
+            TableName: !Ref ProductsTable
       Events:
-        GetOrder:
+        GetProduct:
           Type: Api
           Properties:
-            Path: /orders/{order_id}
+            Path: /products/{product_id}
             Method: get
-  GetOrdersFunction:
+  GetProductsFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: target/package-service-1.0.0.jar
-      Handler: com.postnl.handler.GetOrdersHandler::handleRequest
+      Handler: com.postnl.handler.GetProductsHandler::handleRequest
       Runtime: java8
       Policies:
         - DynamoDBReadPolicy:
-            TableName: !Ref OrdersTable
+            TableName: !Ref ProductsTable
       Events:
-        GetOrders:
+        GetProducts:
           Type: Api
           Properties:
-            Path: /orders
+            Path: /products
             Method: get
-  UpdateOrderFunction:
+  CreateProductFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: target/package-service-1.0.0.jar
-      Handler: com.postnl.handler.UpdateOrderHandler::handleRequest
+      Handler: com.postnl.handler.CreateProductHandler::handleRequest
       Runtime: java8
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref OrdersTable
+            TableName: !Ref ProductsTable
       Events:
-        UpdateOrder:
+        CreateProduct:
           Type: Api
           Properties:
-            Path: /orders/{order_id}
-            Method: post
-  DeleteOrderFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: target/package-service-1.0.0.jar
-      Handler: com.postnl.handler.DeleteOrderHandler::handleRequest
-      Runtime: java8
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref OrdersTable
-      Events:
-        DeleteOrder:
-          Type: Api
-          Properties:
-            Path: /orders/{order_id}
-            Method: delete
-  CreateOrderFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: target/package-service-1.0.0.jar
-      Handler: com.postnl.handler.CreateOrderHandler::handleRequest
-      Runtime: java8
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref OrdersTable
-      Events:
-        CreateOrder:
-          Type: Api
-          Properties:
-            Path: /orders
+            Path: /products
             Method: post
 
-  OrdersTable:
+  ProductsTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: orders_table
+      TableName: products_table
       AttributeDefinitions:
-        - AttributeName: orderId
+        - AttributeName: productId
           AttributeType: S
       KeySchema:
-        - AttributeName: orderId
+        - AttributeName: productId
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
 
@@ -108,22 +78,14 @@ Outputs:
       Description: "API Gateway endpoint URL for Prod stage for Hello World function"
       Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
 
-    GetOrderFunction:
-      Description: "GetOrder Lambda Function ARN"
-      Value: !GetAtt GetOrderFunction.Arn
+    GetProductFunction:
+      Description: "GetProduct Lambda Function ARN"
+      Value: !GetAtt GetProductFunction.Arn
 
-    GetOrdersFunction:
-      Description: "GetOrders Lambda Function ARN"
-      Value: !GetAtt GetOrdersFunction.Arn
+    GetProductsFunction:
+      Description: "GetProducts Lambda Function ARN"
+      Value: !GetAtt GetProductsFunction.Arn
 
-    UpdateOrderFunction:
-      Description: "UpdateOrder Lambda Function ARN"
-      Value: !GetAtt UpdateOrderFunction.Arn
-
-    DeleteOrderFunction:
-      Description: "DeleteOrder Lambda Function ARN"
-      Value: !GetAtt DeleteOrderFunction.Arn
-
-    CreateOrderFunction:
-      Description: "CreateOrder Lambda Function ARN"
-      Value: !GetAtt CreateOrderFunction.Arn
+    CreateProductFunction:
+      Description: "CreateProduct Lambda Function ARN"
+      Value: !GetAtt CreateProductFunction.Arn

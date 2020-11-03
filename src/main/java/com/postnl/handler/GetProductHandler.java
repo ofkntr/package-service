@@ -1,27 +1,10 @@
-/*
- * Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this
- * software and associated documentation files (the "Software"), to deal in the Software
- * without restriction, including without limitation the rights to use, copy, modify,
- * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 package com.postnl.handler;
 
-import com.postnl.config.DaggerOrderComponent;
-import com.postnl.config.OrderComponent;
-import com.postnl.dao.OrderDao;
-import com.postnl.exception.OrderDoesNotExistException;
-import com.postnl.model.Order;
+import com.postnl.config.DaggerProductComponent;
+import com.postnl.config.ProductComponent;
+import com.postnl.dao.ProductDao;
+import com.postnl.exception.ProductDoesNotExistException;
+import com.postnl.model.Product;
 import com.postnl.dto.response.ErrorMessage;
 import com.postnl.dto.response.GatewayResponse;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -35,16 +18,19 @@ import java.io.OutputStream;
 import java.util.Optional;
 import javax.inject.Inject;
 
-public class GetOrderHandler implements OrderRequestStreamHandler {
+public class GetProductHandler implements DefaultRequestStreamHandler {
+
     @Inject
     ObjectMapper objectMapper;
-    @Inject
-    OrderDao orderDao;
-    private final OrderComponent orderComponent;
 
-    public GetOrderHandler() {
-        orderComponent = DaggerOrderComponent.builder().build();
-        orderComponent.inject(this);
+    @Inject
+    ProductDao productDao;
+
+    private final ProductComponent productComponent;
+
+    public GetProductHandler() {
+        productComponent = DaggerProductComponent.builder().build();
+        productComponent.inject(this);
     }
 
     @Override
@@ -62,24 +48,24 @@ public class GetOrderHandler implements OrderRequestStreamHandler {
             return;
         }
         final JsonNode pathParameterMap = event.findValue("pathParameters");
-        final String orderId = Optional.ofNullable(pathParameterMap)
-                .map(mapNode -> mapNode.get("order_id"))
+        final String productId = Optional.ofNullable(pathParameterMap)
+                .map(mapNode -> mapNode.get("product_id"))
                 .map(JsonNode::asText)
                 .orElse(null);
-        if (isNullOrEmpty(orderId)) {
+        if (isNullOrEmpty(productId)) {
             objectMapper.writeValue(output,
                     new GatewayResponse<>(
-                            objectMapper.writeValueAsString(ORDER_ID_WAS_NOT_SET),
+                            objectMapper.writeValueAsString(PRODUCT_ID_WAS_NOT_SET),
                             APPLICATION_JSON, SC_BAD_REQUEST));
             return;
         }
         try {
-            Order order = orderDao.getOrder(orderId);
+            Product product = productDao.getProduct(productId);
             objectMapper.writeValue(output,
                     new GatewayResponse<>(
-                            objectMapper.writeValueAsString(order),
+                            objectMapper.writeValueAsString(product),
                             APPLICATION_JSON, SC_OK));
-        } catch (OrderDoesNotExistException e) {
+        } catch (ProductDoesNotExistException e) {
             objectMapper.writeValue(output,
                     new GatewayResponse<>(
                             objectMapper.writeValueAsString(

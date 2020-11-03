@@ -1,56 +1,4 @@
-# SAM DynamoDB Application for Managing Orders
-
-This is a sample application to demonstrate how to build an application on DynamoDB using the
-DynamoDBMapper ORM framework to map Order items in a DynamoDB table to a RESTful API for order
-management.
-
-```bash
-.
-├── README.md                               <-- This instructions file
-├── LICENSE.txt                             <-- Apache Software License 2.0
-├── NOTICE.txt                              <-- Copyright notices
-├── pom.xml                                 <-- Java dependencies, Docker integration test orchestration
-├── src
-│   ├── main
-│   │   └── java
-│   │       ├── com.amazonaws.config              <-- Classes to manage Dagger 2 dependency injection
-│   │       │   ├── OrderComponent.java           <-- Contains inject methods for handler entrypoints
-│   │       │   └── OrderModule.java              <-- Provides dependencies like the DynamoDB client for injection
-│   │       ├── com.amazonaws.dao                 <-- Package for DAO objects
-│   │       │   └── OrderDao.java                 <-- DAO Wrapper around the DynamoDBTableMapper for Orders
-│   │       ├── com.amazonaws.exception           <-- Source code for custom exceptions
-│   │       ├── com.amazonaws.handler             <-- Source code for lambda functions
-│   │       │   ├── CreateOrderHandler.java       <-- Lambda function code for creating orders
-│   │       │   ├── CreateOrdersTableHandler.java <-- Lambda function code for creating the orders table
-│   │       │   ├── DeleteOrderHandler.java       <-- Lambda function code for deleting orders
-│   │       │   ├── GetOrderHandler.java          <-- Lambda function code for getting one order
-│   │       │   ├── GetOrdersHandler.java         <-- Lambda function code for getting a page of orders
-│   │       │   └── UpdateOrderHandler.java       <-- Lambda function code for updating an order
-│   │       └── com.amazonaws.model               <-- Source code for model classes
-│   │           ├── request                       <-- Source code for request model classes
-│   │           │   ├── CreateOrderRequest.java      <-- POJO shape for creating an order
-│   │           │   ├── GetOrDeleteOrderRequest.java <-- POJO shape for getting or deleting an order
-│   │           │   ├── GetOrdersRequest.java        <-- POJO shape for getting a page of orders
-│   │           │   └── UpdateOrderRequest.java      <-- POJO shape for updating an order
-│   │           ├── response                      <-- Source code for response model classes
-│   │           │   ├── GatewayResponse.java         <-- Generic POJO shape for the APIGateway integration
-│   │           │   └── GetOrdersResponse.java       <-- POJO shape for a page of orders
-│   │           └── Order.java                    <-- POJO for Order resources
-│   └── test                                      <-- Unit and integration tests
-│       └── java
-│           ├── com.amazonaws.config              <-- Classes to manage Dagger 2 dependency injection
-│           ├── com.amazonaws.dao                 <-- Tests for OrderDao
-│           ├── com.amazonaws.handler             <-- Unit and integration tests for handlers
-│           │   ├── CreateOrderHandlerIT.java     <-- Integration tests for creating orders
-│           │   ├── CreateOrderHandlerTest.java   <-- Unit tests for creating orders
-│           │   ├── DeleteOrderHandlerTest.java   <-- Unit tests for deleting orders
-│           │   ├── GetOrderHandlerTest.java      <-- Unit tests for getting one order
-│           │   ├── GetOrdersHandlerTest.java     <-- Unit tests for getting a page of orders
-│           │   └── UpdateOrderHandlerTest.java   <-- Unit tests for updating an order
-│           └── com.amazonaws.services.lambda.runtime <-- Unit and integration tests for handlers
-│               └── TestContext.java              <-- Context implementation for use in tests
-└── template.yaml                                 <-- Contains SAM API Gateway + Lambda definitions
-```
+# AWS SAM DynamoDB Application for Managing Packages
 
 ## Requirements
 
@@ -68,21 +16,23 @@ management.
 We use `maven` to install our dependencies and package our application into a JAR file:
 
 ```bash
-mvn package
+mvn clean package
 ```
 
-### Local development
+### Local Installation Recipe
 
 **Invoking function locally through local API Gateway**
-1. Start DynamoDB Local in a Docker container. `docker run -p 8000:8000 amazon/dynamodb-local`
-2. Create the DynamoDB table. `aws dynamodb create-table --table-name orders_table --attribute-definitions AttributeName=orderId,AttributeType=S --key-schema AttributeName=orderId,KeyType=HASH --billing-mode PAY_PER_REQUEST --endpoint-url http://localhost:8000`
-3. Start the SAM local API.
- - On a Mac: `sam local start-api --env-vars src/test/resources/test_environment_mac.json`
- - On Windows: `sam local start-api --env-vars src/test/resources/test_environment_windows.json`
- - On Linux: `sam local start-api --env-vars src/test/resources/test_environment_linux.json`
+1. Create docker network bridge. `docker network create dynamodb-network`
+2. Start DynamoDB Local in a Docker container. `docker run -d -v "$PWD":/dynamodb_local_db -p 8000:8000 --network dynamodb-network --name dynamodb cnadiminti/dynamodb-local`
+3. Create the DynamoDB table. `aws dynamodb create-table --table-name products_table --attribute-definitions AttributeName=productId,AttributeType=S --key-schema AttributeName=productId,KeyType=HASH --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 --endpoint-url http://localhost:8000`
+1. List created tables on DynamoDB . `aws dynamodb list-tables --endpoint-url http://localhost:8000`
+4. Start the SAM local API.
+ - On a Mac: `sam local start-api -d 5858 --docker-network dynamodb-network -n src/test/resources/test_environment_mac.json`
+ - On Windows: `sam local start-api -d 5858 --docker-network dynamodb-network -n src/test/resources/test_environment_windows.json`
+ - On Linux: `sam local start-api -d 5858 --docker-network dynamodb-network -n src/test/resources/test_environment_linux.json`
 
-If the previous command ran successfully you should now be able to hit the following local endpoint to
-invoke the functions rooted at `http://localhost:3000/orders`
+If the previous command ran successfully you should now be able to create and get product inside of the package to hit the following local endpoint to
+invoke the functions rooted at `http://localhost:3000/products`
 
 **SAM CLI** is used to emulate both Lambda and API Gateway locally and uses our `template.yaml` to
 understand how to bootstrap this environment (runtime, where the source code is, etc.) - The
@@ -91,10 +41,10 @@ following excerpt is what the CLI will read in order to initialize an API and it
 ```yaml
 ...
 Events:
-    GetOrders:
-        Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+    GetProducts:
+        Type: Api
         Properties:
-            Path: /orders
+            Path: /products
             Method: get
 ```
 
@@ -106,11 +56,11 @@ dependencies:
 
 ```yaml
 ...
-    GetOrdersFunction:
+    GetProductsFunction:
         Type: AWS::Serverless::Function
         Properties:
             CodeUri: target/package-service-1.0.0.jar
-            Handler: com.postnl.handler.GetOrdersHandler::handleRequest
+            Handler: com.postnl.handler.GetProductsFunction::handleRequest
 ```
 
 Firstly, we need a `S3 bucket` where we can upload our Lambda functions packaged as ZIP before we
@@ -136,7 +86,7 @@ Next, the following command will create a Cloudformation Stack and deploy your S
 ```bash
 sam deploy \
     --template-file packaged.yaml \
-    --stack-name sam-orderHandler \
+    --stack-name sam-packageHandler \
     --capabilities CAPABILITY_IAM
 ```
 
@@ -146,7 +96,7 @@ After deployment is complete you can run the following command to retrieve the A
 
 ```bash
 aws cloudformation describe-stacks \
-    --stack-name sam-orderHandler \
+    --stack-name sam-packageHandler \
     --query 'Stacks[].Outputs'
 ```
 
@@ -154,12 +104,12 @@ aws cloudformation describe-stacks \
 
 ### Running unit tests
 We use `JUnit` for testing our code.
-Unit tests in this sample package mock out the DynamoDBTableMapper class for Order objects.
+Unit tests in this sample package mock out the DynamoDBTableMapper class for Product objects.
 Unit tests do not require connectivity to a DynamoDB endpoint. You can run unit tests with the
 following command:
 
 ```bash
-mvn test
+mvn clean test
 ```
 
 ### Running integration tests
@@ -168,18 +118,10 @@ AmazonDynamoDB client instance. Integration tests require connectivity to a Dyna
 as such the POM starts DynamoDB Local from the Dockerhub repository for integration tests.
 
 ```bash
-mvn verify
+mvn clean verify
 ```
 
-### Running end to end tests through the SAM CLI Local endpoint
-Running the following end-to-end tests requires Python 3 and the `requests` pip
-package to be installed. For these tests to succeed,
-```bash
-pip3 install requests
-python3 src/test/resources/api_tests.py 3
-```
-
-The number that follows the test script name is the number of orders to create in the
+The number that follows the test script name is the number of products to create in the
 test. For these tests to work, you must follow the steps for [local development](#local-development).  
 
 # Appendix
@@ -196,17 +138,10 @@ sam package \
 
 sam deploy \
     --template-file packaged.yaml \
-    --stack-name sam-orderHandler \
+    --stack-name sam-packageHandler \
     --capabilities CAPABILITY_IAM \
     --parameter-overrides MyParameterSample=MySampleValue
 
 aws cloudformation describe-stacks \
-    --stack-name sam-orderHandler --query 'Stacks[].Outputs'
+    --stack-name sam-packageHandler --query 'Stacks[].Outputs'
 ```
-
-## Bringing to the next level
-
-Next, you can use the following resources to know more about beyond hello world samples and how others
-structure their Serverless applications:
-
-* [AWS Serverless Application Repository](https://aws.amazon.com/serverless/serverlessrepo/)

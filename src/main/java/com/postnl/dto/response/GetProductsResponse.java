@@ -1,6 +1,6 @@
 package com.postnl.dto.response;
 
-import com.postnl.model.Order;
+import com.postnl.model.Product;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @JsonAutoDetect
-public class GetOrdersResponse {
-    private final String lastEvaluatedKey;
-    private final List<Order> orders;
+public class GetProductsResponse {
+    private final int total;
+    private final List<Product> products;
 }
