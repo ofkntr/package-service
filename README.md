@@ -66,6 +66,14 @@ Events:
             Method: get
 ```
 
+### Database Approach
+
+![image](cap_theorem.png)
+
+In terms of the CAP theorem, DynamoDB is an Available & Partition-tolerant (AP) database with eventual write consistency. On the read front, it supports both eventually consistent and strongly consistent reads. However, strongly consistent reads in DynamoDB are not highly available in the presence of network delays and partitions. 
+Since such failures are common in multi-region/global apps running on public clouds such as AWS, DynamoDB tries to reduce such failures by limiting strongly consistent reads only to a single region. This in turn makes DynamoDB unfit for most multi-region apps and an unreliable solution for even single-region apps.
+
+
 ## Packaging and deployment
 
 AWS Lambda Java runtime accepts either a zip file or a standalone JAR file - We use the latter in
