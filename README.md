@@ -30,6 +30,24 @@ mvn clean package
  - On a Mac: `sam local start-api -d 5858 --docker-network dynamodb-network -n src/test/resources/test_environment_mac.json`
  - On Windows: `sam local start-api -d 5858 --docker-network dynamodb-network -n src/test/resources/test_environment_windows.json`
  - On Linux: `sam local start-api -d 5858 --docker-network dynamodb-network -n src/test/resources/test_environment_linux.json`
+ 
+ Basic API calls
+ 
+ ```bash
+ curl --location --request POST 'http://127.0.0.1:3000/products' \
+ --header 'Content-Type: application/json' \
+ --data-raw '{
+   "productType" : "box",
+   "deliveryDate" : "2020-10-08 13:00 - 15:00"
+ }
+ ```
+ 
+ ```bash
+ curl --location --request GET 'http://127.0.0.1:3000/products/3fce08a3-cc35-46a5-a440-e2d1b43d2979'
+ ```
+ ```bash
+ curl --location --request GET 'http://127.0.0.1:3000/packages'
+ ```
 
 If the previous command ran successfully you should now be able to create and get product inside of the package to hit the following local endpoint to
 invoke the functions rooted at `http://localhost:3000/products`
@@ -41,10 +59,10 @@ following excerpt is what the CLI will read in order to initialize an API and it
 ```yaml
 ...
 Events:
-    GetProducts:
+    GetPackages:
         Type: Api
         Properties:
-            Path: /products
+            Path: /packages
             Method: get
 ```
 
@@ -56,11 +74,11 @@ dependencies:
 
 ```yaml
 ...
-    GetProductsFunction:
+    GetPackagesFunction:
         Type: AWS::Serverless::Function
         Properties:
             CodeUri: target/package-service-1.0.0.jar
-            Handler: com.postnl.handler.GetProductsFunction::handleRequest
+            Handler: com.postnl.handler.GetPackagesHandler::handleRequest
 ```
 
 Firstly, we need a `S3 bucket` where we can upload our Lambda functions packaged as ZIP before we
@@ -89,8 +107,6 @@ sam deploy \
     --stack-name sam-packageHandler \
     --capabilities CAPABILITY_IAM
 ```
-
-> **See [Serverless Application Model (SAM) HOWTO Guide](https://github.com/awslabs/serverless-application-model/blob/master/HOWTO.md) for more details in how to get started.**
 
 After deployment is complete you can run the following command to retrieve the API Gateway Endpoint URL:
 

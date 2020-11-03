@@ -30,20 +30,20 @@ Resources:
           Properties:
             Path: /products/{product_id}
             Method: get
-  GetProductsFunction:
+  GetPackagesFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: target/package-service-1.0.0.jar
-      Handler: com.postnl.handler.GetProductsHandler::handleRequest
+      Handler: com.postnl.handler.GetPackagesHandler::handleRequest
       Runtime: java8
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref ProductsTable
       Events:
-        GetProducts:
+        GetPackages:
           Type: Api
           Properties:
-            Path: /products
+            Path: /packages
             Method: get
   CreateProductFunction:
     Type: AWS::Serverless::Function
@@ -82,9 +82,9 @@ Outputs:
       Description: "GetProduct Lambda Function ARN"
       Value: !GetAtt GetProductFunction.Arn
 
-    GetProductsFunction:
-      Description: "GetProducts Lambda Function ARN"
-      Value: !GetAtt GetProductsFunction.Arn
+    GetPackagesFunction:
+      Description: "GetPackages Lambda Function ARN"
+      Value: !GetAtt GetPackagesFunction.Arn
 
     CreateProductFunction:
       Description: "CreateProduct Lambda Function ARN"

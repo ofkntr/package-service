@@ -2,7 +2,7 @@ package com.postnl.config;
 
 import com.postnl.handler.CreateProductHandler;
 import com.postnl.handler.GetProductHandler;
-import com.postnl.handler.GetProductsHandler;
+import com.postnl.handler.GetPackagesHandler;
 
 import dagger.Component;
 
@@ -16,6 +16,6 @@ public interface ProductComponent {
 
     void inject(GetProductHandler requestHandler);
 
-    void inject(GetProductsHandler requestHandler);
+    void inject(GetPackagesHandler requestHandler);
 
 }

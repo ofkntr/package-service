@@ -13,14 +13,13 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.Map;
 
 public class CreateProductHandlerIT extends ProductHandlerTestBase {
 
     private final CreateProductHandler sut = new CreateProductHandler();
     private final GetProductHandler getProduct = new GetProductHandler();
-    private final GetProductsHandler getProducts = new GetProductsHandler();
+    private final GetPackagesHandler getPackages = new GetPackagesHandler();
 
     @Test
     public void handleRequest_whenCreateProductInputStreamOk_puts200InOutputStream() throws IOException {
@@ -68,7 +67,7 @@ public class CreateProductHandlerIT extends ProductHandlerTestBase {
 
         //now that we can get the singleton lets see if we can get it in a page
         os = new ByteArrayOutputStream();
-        getProducts.handleRequest(new ByteArrayInputStream("{}".getBytes()), os, ctxt);
+        getPackages.handleRequest(new ByteArrayInputStream("{}".getBytes()), os, ctxt);
         assertTrue(os.toString().contains(productId));
 
         assertTrue(os.toString().contains("200")); //SC_OK

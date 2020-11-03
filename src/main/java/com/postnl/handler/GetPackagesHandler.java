@@ -17,7 +17,7 @@ import java.io.OutputStream;
 import java.util.Optional;
 import javax.inject.Inject;
 
-public class GetProductsHandler implements DefaultRequestStreamHandler {
+public class GetPackagesHandler implements DefaultRequestStreamHandler {
 
     @Inject
     ObjectMapper objectMapper;
@@ -27,7 +27,7 @@ public class GetProductsHandler implements DefaultRequestStreamHandler {
 
     private final ProductComponent productComponent;
 
-    public GetProductsHandler() {
+    public GetPackagesHandler() {
         productComponent = DaggerProductComponent.builder().build();
         productComponent.inject(this);
     }

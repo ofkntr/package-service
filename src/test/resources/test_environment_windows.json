@@ -3,7 +3,7 @@
         "ENDPOINT_OVERRIDE": "http://dynamodb:8000",
         "TABLE_NAME": "products_table"
     },
-    "GetProductsFunction": {
+    "GetPackagesFunction": {
         "ENDPOINT_OVERRIDE": "http://dynamodb:8000",
         "TABLE_NAME": "products_table"
     },

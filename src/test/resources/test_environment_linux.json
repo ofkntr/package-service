@@ -3,7 +3,7 @@
     "ENDPOINT_OVERRIDE": "http://127.0.0.1:8000",
     "TABLE_NAME": "products_table"
   },
-  "GetProductsFunction": {
+  "GetPackagesFunction": {
     "ENDPOINT_OVERRIDE": "http://127.0.0.1:8000",
     "TABLE_NAME": "products_table"
   },
